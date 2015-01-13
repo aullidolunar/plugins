@@ -24,4 +24,4 @@ msgstr "Caracteres perdidos en tu portátil"
 
 #: /home/joel/Documentos/gcc/liblostchars/src/plugin.c:56
 msgid "Your lost chars"
-msgstr "Tu caracteres perdidos"
+msgstr "Tus caracteres perdidos"
