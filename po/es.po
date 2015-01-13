@@ -1,0 +1,27 @@
+# Spanish translations for lostchars package
+# Traducciones al español para el paquete lostchars.
+# Copyright (C) 2015 aullidolunar@gmail.com
+# This file is distributed under the same license as the lostchars package.
+# Automatically generated, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: lostchars 1.0.0.1\n"
+"Report-Msgid-Bugs-To: aullidolunar@gmail.com\n"
+"POT-Creation-Date: 2015-01-13 10:57-0800\n"
+"PO-Revision-Date: 2015-01-13 10:57-0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: es_MX\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: /home/joel/Documentos/gcc/liblostchars/src/plugin.c:16
+msgid "Lost chars in your laptop"
+msgstr "Caracteres perdidos en tu portátil"
+
+#: /home/joel/Documentos/gcc/liblostchars/src/plugin.c:56
+msgid "Your lost chars"
+msgstr "Tu caracteres perdidos"
