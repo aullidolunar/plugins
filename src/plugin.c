@@ -52,10 +52,20 @@ void plugin_init( GeanyData *data )
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	spacer = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 #endif
-	
-	m_item = gtk_menu_item_new_with_label (_("Your lost chars"));
+/* looking for a portable way (gtk2 <-> gtk3) to add icons to menus */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+	m_item = gtk_image_menu_item_new_with_label (_("Your lost chars"));
 	ui_add_document_sensitive (m_item);
-	
+	if (g_file_test (ICON_PATH, G_FILE_TEST_IS_REGULAR)) {
+		GdkPixbuf *nice_image;
+		GtkWidget *widget_nice_image;
+		nice_image = gdk_pixbuf_new_from_file_at_size (ICON_PATH, 16, 16, NULL);
+		widget_nice_image = gtk_image_new_from_pixbuf (nice_image);
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (m_item), widget_nice_image);
+		g_object_unref (nice_image);
+	}
+#pragma GCC diagnostic pop	
 	subMenu = gtk_menu_new ();
 	
 	while (_chars[index] != NULL) {
@@ -75,9 +85,4 @@ void plugin_init( GeanyData *data )
 void plugin_cleanup( void )
 {
 	gtk_widget_destroy (m_item);
-}
-
-void plugin_configure_single ( GtkWidget *parent )
-{
-	dialogs_show_msgbox(GTK_MESSAGE_INFO, ICON_PATH);
 }
