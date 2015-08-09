@@ -1,0 +1,12 @@
+// Generated from config.h.in using cmake version @CMAKE_VERSION@
+#ifndef CONFIG_H_INCLUDED
+#define CONFIG_H_INCLUDED
+
+// project stuff
+#define PACKAGE_NAME				"@PROJECT_NAME@"
+#define PACKAGE_VERSION 			"@PROJECT_VERSION@"
+#define PACKAGE_STRING 				"@PROJECT_NAME@ @PROJECT_VERSION@"
+#define PACKAGE_BUGREPORT			"@EMAIL@"
+#define SELFIE						"@AUTHOR@<@EMAIL@>"
+
+#endif
