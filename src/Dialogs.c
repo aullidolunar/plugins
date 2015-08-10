@@ -4,21 +4,21 @@ HINSTANCE hInstance; // global, meh
 
 PluginEntry(InputBox)
 {
-	wchar_t sztype[3];
-	wchar_t retButton[3];
-	wchar_t retVar[3];
+	TCHAR sztype[3];
+	TCHAR retButton[3];
+	TCHAR retVar[3];
 	EXDLL_INIT();
 	{
 		IPBData pPBdata;
 		HWND hDlg;
 		MSG msg;
-		PopStringW (sztype); // type 
-		PopStringW (pPBdata.sTitle); // dialog title
-		PopStringW (pPBdata.sText); // dialog secundary text
-		PopStringW (pPBdata.sOk); // label for ok button
-		PopStringW (pPBdata.sCancel); // label for cancel button
-		PopStringW (retButton); // return var of the button
-		PopStringW (retVar); // return var of the text
+		popstring (sztype); // type 
+		popstring (pPBdata.sTitle); // dialog title
+		popstring (pPBdata.sText); // dialog secundary text
+		popstring (pPBdata.sOk); // label for ok button
+		popstring (pPBdata.sCancel); // label for cancel button
+		popstring (retButton); // return var of the button
+		popstring (retVar); // return var of the text
 		pPBdata.bPassMask = myatoi (sztype);
 		pPBdata.nRetButton = myatoi (retButton);
 		pPBdata.nRetVal = myatoi (retVar);
@@ -42,7 +42,7 @@ PluginEntry(About)
 	buff = HeapAlloc (GetProcessHeap(), 0, buff_size);
 	EXDLL_INIT();
 	{
-		wnsprintf (buff, buff_size, _T("Plugin name: %s\nVersion: %s\nAuthor: %s"), _T(PACKAGE_NAME), _T(PACKAGE_VERSION), _T(SELFIE));
+		wnsprintf (buff, buff_size, _T("Plugin name: %s\nCharset: %s\nVersion: %s\nAuthor: %s"), _T(PACKAGE_NAME), _T(PACKAGE_CHARSET), _T(PACKAGE_VERSION), _T(SELFIE));
 		MessageBox (hwndParent, buff, _T("About Dialogs"), MB_OK|MB_ICONINFORMATION);
 	}
 	HeapFree (GetProcessHeap(), 0, buff);
@@ -62,10 +62,10 @@ PluginEntry(Open)
 	{
 		OPENFILENAME ofn;
 		int nRetButton;
-		PopStringW (init_dir);
-		PopStringW (filters);
-		PopStringW (retButton);
-		PopStringW (retFile);
+		popstring (init_dir);
+		popstring (filters);
+		popstring (retButton);
+		popstring (retFile);
 		SecureZeroMemory (&ofn, sizeof(OPENFILENAME));
 		ofn.Flags = OFN_EXPLORER|OFN_FILEMUSTEXIST|OFN_HIDEREADONLY;
 		ofn.hwndOwner = hwndParent;
@@ -78,11 +78,11 @@ PluginEntry(Open)
 		if (GetOpenFileName(&ofn)) {
 			int nRetVal;
 			nRetVal = myatoi (retFile);
-			SetUserVariableW (nRetVal, buff);
-			SetUserVariableW (nRetButton, _T("1"));
+			setuservariable (nRetVal, buff);
+			setuservariable (nRetButton, _T("1"));
 		}
 		else {
-			SetUserVariableW (nRetButton, _T("0"));
+			setuservariable (nRetButton, _T("0"));
 		}
 	}
 	HeapFree (GetProcessHeap(), HEAP_ZERO_MEMORY, buff);
@@ -102,10 +102,10 @@ PluginEntry(Save)
 	{
 		OPENFILENAME ofn;
 		int nRetButton;
-		PopStringW (init_dir);
-		PopStringW (filters);
-		PopStringW (retButton);
-		PopStringW (retFile);
+		popstring (init_dir);
+		popstring (filters);
+		popstring (retButton);
+		popstring (retFile);
 		SecureZeroMemory (&ofn, sizeof(OPENFILENAME));
 		ofn.Flags = OFN_EXPLORER|OFN_FILEMUSTEXIST|OFN_OVERWRITEPROMPT;
 		ofn.hwndOwner = hwndParent;
@@ -118,11 +118,11 @@ PluginEntry(Save)
 		if (GetSaveFileName(&ofn)) {
 			int nRetVal;
 			nRetVal = myatoi (retFile);
-			SetUserVariableW (nRetVal, buff);
-			SetUserVariableW (nRetButton, _T("1"));
+			setuservariable (nRetVal, buff);
+			setuservariable (nRetButton, _T("1"));
 		}
 		else {
-			SetUserVariableW (nRetButton, _T("0"));
+			setuservariable (nRetButton, _T("0"));
 		}
 	}
 	HeapFree (GetProcessHeap(), HEAP_ZERO_MEMORY, buff);
@@ -134,9 +134,9 @@ PluginEntry(Ver)
 	EXDLL_INIT();
 	{
 		int nRetVal;
-		PopStringW (retVar);
+		popstring (retVar);
 		nRetVal = myatoi (retVar);
-		SetUserVariableW (nRetVal, _T(PACKAGE_VERSION));
+		setuservariable (nRetVal, _T(PACKAGE_VERSION));
 	}
 }
 
@@ -156,10 +156,10 @@ PluginEntry(FolderDlg)
 		LPITEMIDLIST pidl;
 		int nRetVal;
 		int nRetButton;
-		PopStringW(info);
-		PopStringW(dir);
-		PopStringW(retButton);
-		PopStringW(retDir);
+		popstring(info);
+		popstring(dir);
+		popstring(retButton);
+		popstring(retDir);
 		ZeroMemory (&bi, sizeof(BROWSEINFO));
 		bi.hwndOwner = hwndParent;
 		bi.pidlRoot = NULL;
@@ -172,11 +172,11 @@ PluginEntry(FolderDlg)
 		nRetButton = myatoi (retButton);
 		pidl = SHBrowseForFolder(&bi);
 		if (SHGetPathFromIDList(pidl, buff)) {
-			SetUserVariableW (nRetVal, buff);
-			SetUserVariableW (nRetButton, _T("1"));
+			setuservariable (nRetVal, buff);
+			setuservariable (nRetButton, _T("1"));
 			CoTaskMemFree (pidl);
 		} else {
-			SetUserVariableW (nRetButton, _T("0"));
+			setuservariable (nRetButton, _T("0"));
 		}
 	}
 	HeapFree (GetProcessHeap(), 0, buff);

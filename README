@@ -12,7 +12,15 @@ To build the plugin, you need:
 * platform sdk
 * Could work with gcc >= 4.7 (still testing)
 
+to built:
+* Create a "build" directory in source dir.
+* run: cmake [-G "MinGW Makefiles"] [-DUSE_UNICODE=OFF] ..
+
 History:
++ v3.0.2.0: 08/10/2015
+- Added UNICODE and ANSI build options (see examples of the new syntax)
+- Someone please test libDialogsX plugins and return feedback, since those were built with gcc
+
 + v3.0.1.0: 08/09/2015
 - A few changes in functions
 - Added libDialogs.dll, built statically with gcc 4.9.2 for testing

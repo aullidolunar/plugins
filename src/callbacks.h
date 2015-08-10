@@ -5,6 +5,6 @@
 
 int CALLBACK FolderProc(HWND, UINT, LPARAM, LPARAM);
 INT_PTR CALLBACK DialogFunc(HWND, UINT, WPARAM, LPARAM);
-wchar_t* replacechar(wchar_t*, wchar_t, wchar_t);
+TCHAR* replacechar(TCHAR*, TCHAR, TCHAR);
 
 #endif

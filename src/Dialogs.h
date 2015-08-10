@@ -16,10 +16,10 @@
 #include "resource.h"
 
 typedef struct {
-	wchar_t sTitle[64];
-	wchar_t sText[64];
-	wchar_t sOk[12];
-	wchar_t sCancel[12];
+	TCHAR sTitle[64];
+	TCHAR sText[64];
+	TCHAR sOk[12];
+	TCHAR sCancel[12];
 	int nRetButton;
 	int nRetVal;
 	int bPassMask;

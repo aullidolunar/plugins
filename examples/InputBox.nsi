@@ -10,8 +10,16 @@ XPStyle on
 
 Page instfiles
 
-# Just for testing
-!addplugindir /x86-unicode "..\bin"
+; Just for testing
+!ifdef NSIS_UNICODE
+!define NSIS_CHARSET "/x86-unicode"
+!define Dialogs "DialogsW"
+!else
+!define NSIS_CHARSET "/x86-ansi"
+!define Dialogs "DialogsA"
+!endif
+
+!addplugindir "${NSIS_CHARSET}" "..\bin"
 
 Function .onInit
 InitPluginsDir
@@ -27,11 +35,13 @@ Section ""
 ; label cancel, max 12 chars
 ; Return var for the button pressed: 0=cancel, 1=ok
 ; Return var with the inputed text
-Dialogs::Ver 9
-Dialogs::InputBox 1 "Dialogs plugin version $9" "I need some foo text" "Go!" "Close Me" 4 6
+${Dialogs}::Ver 9
+${Dialogs}::InputBox 1 "Dialogs plugin version $9" "I need some foo text" "Go!" "Close Me" 4 6
 ${if} $4 = 1
 DetailPrint "Your foo text: $6"
 ${else}
 DetailPrint "You don't want foo text"
 ${endif}
+!undef Dialogs
+!undef NSIS_CHARSET
 SectionEnd

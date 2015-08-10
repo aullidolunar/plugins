@@ -38,18 +38,18 @@ INT_PTR CALLBACK DialogFunc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 			{
 				case IDOK:
 				{
-					wchar_t *buff;
+					TCHAR *buff;
 					buff = HeapAlloc (GetProcessHeap(), 0, pPBData->buff_size);
 					GetDlgItemText (hDlg, IDC_ENTRY, buff, pPBData->buff_size);
-					SetUserVariableW (pPBData->nRetButton, _T("1"));
-					SetUserVariableW (pPBData->nRetVal, buff);
+					setuservariable (pPBData->nRetButton, _T("1"));
+					setuservariable (pPBData->nRetVal, buff);
 					HeapFree (GetProcessHeap(), 0, buff);
 					DestroyWindow (hDlg);
 					break;
 				}
 				case IDCANCEL:
 				{
-					SetUserVariableW (pPBData->nRetButton, _T("0"));
+					setuservariable (pPBData->nRetButton, _T("0"));
 					DestroyWindow (hDlg);
 					break;
 				}
@@ -70,7 +70,7 @@ INT_PTR CALLBACK DialogFunc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 	return FALSE;
 }
 
-wchar_t* replacechar(wchar_t* buff, wchar_t findchr, wchar_t replace) {
+TCHAR* replacechar(TCHAR* buff, TCHAR findchr, TCHAR replace) {
 	int len;
 	int z;
 	len = lstrlen(buff);

@@ -1,13 +1,10 @@
 # src/CMakeLists.txt
 
-## Let's be unicode
-add_definitions (-DUNICODE -D_UNICODE)
-
 ## Be sure we have NSIS installed AND its installation directory in PATH
-if (EXISTS "$ENV{NSIS}/Examples/Plugin/nsis/pluginapi-x86-unicode.lib")
+if (EXISTS "$ENV{NSIS}/Examples/Plugin/nsis/${NSIS_LIB}")
 	include_directories ("$ENV{NSIS}/Examples/Plugin")
 	link_directories ("$ENV{NSIS}/Examples/Plugin/nsis")
-	link_libraries ("pluginapi-x86-unicode.lib")
+	link_libraries ("${NSIS_LIB}")
 else ()
 	message(FATAL_ERROR "Sorry, I couldn't find the nsis library for plugins.")
 endif ()
@@ -49,9 +46,8 @@ include_directories (${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/src ${PROJECT_S
 link_libraries ("Shlwapi.lib")
 
 ## Library creation
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY )
-add_library (${PROJECT_NAME} MODULE ${_SOURCES})
-set_target_properties (${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+add_library (${PLUGIN_FILE_NAME} MODULE ${_SOURCES})
+set_target_properties (${PLUGIN_FILE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 if (MSVC)
-	set_target_properties (${PROJECT_NAME} PROPERTIES LINK_FLAGS "/NODEFAULTLIB:\"LIBC.lib\" /OPT:NOWIN98 /MANIFEST:NO")
+	set_target_properties (${PLUGIN_FILE_NAME} PROPERTIES LINK_FLAGS "/NODEFAULTLIB:\"LIBC.lib\" /OPT:NOWIN98 /MANIFEST:NO")
 endif ()
