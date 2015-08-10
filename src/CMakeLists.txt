@@ -45,6 +45,8 @@ list (APPEND _SOURCES callbacks.c Dialogs.c)
 
 ## add directories to the search path
 include_directories (${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/data)
+## added for wnsprintf
+link_libraries ("Shlwapi.lib")
 
 ## Library creation
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY )

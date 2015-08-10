@@ -8,6 +8,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
+#include <Shlwapi.h>
 #include <nsis/pluginapi.h> // nsis plugin
 #ifndef _TCHAR_DEFINED
 #include <tchar.h>

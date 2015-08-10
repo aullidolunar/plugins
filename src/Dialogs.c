@@ -19,10 +19,10 @@ PluginEntry(InputBox)
 		PopStringW (pPBdata.sCancel); // label for cancel button
 		PopStringW (retButton); // return var of the button
 		PopStringW (retVar); // return var of the text
-		pPBdata.bPassMask = _ttoi (sztype);
-		pPBdata.nRetButton = _ttoi (retButton);
-		pPBdata.nRetVal = _ttoi (retVar);
-		pPBdata.buff_size = string_size;
+		pPBdata.bPassMask = myatoi (sztype);
+		pPBdata.nRetButton = myatoi (retButton);
+		pPBdata.nRetVal = myatoi (retVar);
+		pPBdata.buff_size = sizeof(TCHAR)*string_size;
 		hDlg = CreateDialogParam (hInstance, MAKEINTRESOURCE(IDD_DIALOG1), hwndParent, DialogFunc, (LPARAM)&pPBdata);
 		while(GetMessage(&msg, NULL, 0, 0)) {
 			if(!IsDialogMessage(hDlg, &msg)) {
@@ -36,11 +36,13 @@ PluginEntry(InputBox)
 
 PluginEntry(About)
 {
+	int buff_size;
 	TCHAR *buff; // buffer
-	buff = HeapAlloc (GetProcessHeap(), 0, string_size);
+	buff_size = sizeof(TCHAR)*string_size;
+	buff = HeapAlloc (GetProcessHeap(), 0, buff_size);
 	EXDLL_INIT();
 	{
-		_sntprintf (buff, string_size, _T("Plugin name: %s\nVersion: %s\nAuthor: %s"), _T(PACKAGE_NAME), _T(PACKAGE_VERSION), _T(SELFIE));
+		wnsprintf (buff, buff_size, _T("Plugin name: %s\nVersion: %s\nAuthor: %s"), _T(PACKAGE_NAME), _T(PACKAGE_VERSION), _T(SELFIE));
 		MessageBox (hwndParent, buff, _T("About Dialogs"), MB_OK|MB_ICONINFORMATION);
 	}
 	HeapFree (GetProcessHeap(), 0, buff);
@@ -48,12 +50,14 @@ PluginEntry(About)
 
 PluginEntry(Open)
 {
+	int buff_size;
 	TCHAR *buff; // buffer
 	TCHAR init_dir[MAX_PATH]; // initial directory
 	TCHAR filters[MAX_PATH]; // filters for the open dialog
 	TCHAR retButton[3]; // return var of the button
 	TCHAR retFile[3]; // return var of the file
-	buff = HeapAlloc (GetProcessHeap(), HEAP_ZERO_MEMORY, string_size);
+	buff_size = sizeof(TCHAR)*string_size;
+	buff = HeapAlloc (GetProcessHeap(), HEAP_ZERO_MEMORY, buff_size);
 	EXDLL_INIT ();
 	{
 		OPENFILENAME ofn;
@@ -62,18 +66,18 @@ PluginEntry(Open)
 		PopStringW (filters);
 		PopStringW (retButton);
 		PopStringW (retFile);
-		ZeroMemory (&ofn, sizeof(OPENFILENAME));
+		SecureZeroMemory (&ofn, sizeof(OPENFILENAME));
 		ofn.Flags = OFN_EXPLORER|OFN_FILEMUSTEXIST|OFN_HIDEREADONLY;
 		ofn.hwndOwner = hwndParent;
 		ofn.lpstrInitialDir = init_dir;
 		ofn.lpstrFile = buff;
 		ofn.lpstrFilter = replacechar (filters, '|', '\0');
 		ofn.lStructSize = sizeof(OPENFILENAME);
-		ofn.nMaxFile = string_size;
-		nRetButton = _ttoi (retButton);
+		ofn.nMaxFile = buff_size;
+		nRetButton = myatoi (retButton);
 		if (GetOpenFileName(&ofn)) {
 			int nRetVal;
-			nRetVal = _ttoi (retFile);
+			nRetVal = myatoi (retFile);
 			SetUserVariableW (nRetVal, buff);
 			SetUserVariableW (nRetButton, _T("1"));
 		}
@@ -86,12 +90,14 @@ PluginEntry(Open)
 
 PluginEntry(Save)
 {
+	int buff_size;
 	TCHAR *buff; // buffer
 	TCHAR init_dir[MAX_PATH]; // initial directory
 	TCHAR filters[MAX_PATH]; // filters for the open dialog
 	TCHAR retButton[3]; // return var of the button
 	TCHAR retFile[3]; // return var of the file
-	buff = HeapAlloc (GetProcessHeap(), HEAP_ZERO_MEMORY, string_size);
+	buff_size = sizeof(TCHAR)*string_size;
+	buff = HeapAlloc (GetProcessHeap(), HEAP_ZERO_MEMORY, buff_size);
 	EXDLL_INIT ();
 	{
 		OPENFILENAME ofn;
@@ -100,18 +106,18 @@ PluginEntry(Save)
 		PopStringW (filters);
 		PopStringW (retButton);
 		PopStringW (retFile);
-		ZeroMemory (&ofn, sizeof(OPENFILENAME));
+		SecureZeroMemory (&ofn, sizeof(OPENFILENAME));
 		ofn.Flags = OFN_EXPLORER|OFN_FILEMUSTEXIST|OFN_OVERWRITEPROMPT;
 		ofn.hwndOwner = hwndParent;
 		ofn.lpstrInitialDir = init_dir;
 		ofn.lpstrFile = buff;
 		ofn.lpstrFilter = replacechar (filters, '|', '\0');
 		ofn.lStructSize = sizeof(OPENFILENAME);
-		ofn.nMaxFile = string_size;
-		nRetButton = _ttoi (retButton);
+		ofn.nMaxFile = buff_size;
+		nRetButton = myatoi (retButton);
 		if (GetSaveFileName(&ofn)) {
 			int nRetVal;
-			nRetVal = _ttoi (retFile);
+			nRetVal = myatoi (retFile);
 			SetUserVariableW (nRetVal, buff);
 			SetUserVariableW (nRetButton, _T("1"));
 		}
@@ -129,7 +135,7 @@ PluginEntry(Ver)
 	{
 		int nRetVal;
 		PopStringW (retVar);
-		nRetVal = _ttoi (retVar);
+		nRetVal = myatoi (retVar);
 		SetUserVariableW (nRetVal, _T(PACKAGE_VERSION));
 	}
 }
@@ -141,7 +147,9 @@ PluginEntry(FolderDlg)
 	TCHAR retButton[3]; // return var of the button
 	TCHAR retDir[3]; // return var of the directory
 	TCHAR *buff; // buffer
-	buff = HeapAlloc (GetProcessHeap(), 0, string_size);
+	int buff_size;
+	buff_size = sizeof(TCHAR)*string_size;
+	buff = HeapAlloc (GetProcessHeap(), 0, buff_size);
 	EXDLL_INIT();
 	{
 		BROWSEINFO bi;
@@ -160,8 +168,8 @@ PluginEntry(FolderDlg)
 		bi.ulFlags = BIF_RETURNONLYFSDIRS|BIF_DONTGOBELOWDOMAIN|BIF_USENEWUI;
 		bi.lParam = (LPARAM)dir;
 		bi.lpfn = FolderProc;
-		nRetVal = _ttoi (retDir);
-		nRetButton = _ttoi (retButton);
+		nRetVal = myatoi (retDir);
+		nRetButton = myatoi (retButton);
 		pidl = SHBrowseForFolder(&bi);
 		if (SHGetPathFromIDList(pidl, buff)) {
 			SetUserVariableW (nRetVal, buff);
@@ -180,7 +188,6 @@ BOOL WINAPI DllMain(HINSTANCE hInst, ULONG ul_reason_for_call, LPVOID lpReserved
 	switch (ul_reason_for_call) {
 		case DLL_PROCESS_ATTACH:
 		{
-			
 			break;
 		}
 		case DLL_PROCESS_DETACH:

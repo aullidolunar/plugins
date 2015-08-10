@@ -73,7 +73,7 @@ INT_PTR CALLBACK DialogFunc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 wchar_t* replacechar(wchar_t* buff, wchar_t findchr, wchar_t replace) {
 	int len;
 	int z;
-	len = _tcslen(buff);
+	len = lstrlen(buff);
 	for(z = 0; z < len; z++) {
 		if(buff[z] == findchr) {
 			buff[z] = replace;
