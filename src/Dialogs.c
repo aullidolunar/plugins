@@ -36,13 +36,11 @@ PluginEntry(InputBox)
 
 PluginEntry(About)
 {
-	int buff_size;
 	TCHAR *buff; // buffer
-	buff_size = sizeof(TCHAR)*string_size;
-	buff = HeapAlloc (GetProcessHeap(), 0, buff_size);
+	buff = HeapAlloc (GetProcessHeap(), 0, sizeof(TCHAR)*string_size);
 	EXDLL_INIT();
 	{
-		wnsprintf (buff, buff_size, _T("Plugin name: %s\nCharset: %s\nVersion: %s\nAuthor: %s"), _T(PACKAGE_NAME), _T(PACKAGE_CHARSET), _T(PACKAGE_VERSION), _T(SELFIE));
+		wnsprintf (buff, string_size, _T("Plugin name: %s\nCharset: %s\nVersion: %s\nAuthor: %s"), _T(PACKAGE_NAME), _T(PACKAGE_CHARSET), _T(PACKAGE_VERSION), _T(SELFIE));
 		MessageBox (hwndParent, buff, _T("About Dialogs"), MB_OK|MB_ICONINFORMATION);
 	}
 	HeapFree (GetProcessHeap(), 0, buff);

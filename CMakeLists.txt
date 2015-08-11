@@ -14,7 +14,7 @@ endif ()
 # package name
 set (_PN "Dialogs")
 # package version: mayor.minor.macro.micro
-set (_PV "3.0.2.0")
+set (_PV "3.0.2.1")
 # package description
 set (_PD "Dialogs NSIS plugin")
 # me
