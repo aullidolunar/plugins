@@ -46,6 +46,101 @@ PluginEntry(About)
 	HeapFree (GetProcessHeap(), 0, buff);
 }
 
+PluginEntry(FontDlg)
+{
+	TCHAR retButton[3]; // return var of the button
+	TCHAR retBuffer[3]; // return var of the buffer
+	EXDLL_INIT();
+	{
+		CHOOSEFONT cf;
+		LOGFONT lf;
+		HFONT hFont;
+		
+		hFont = (HFONT)GetStockObject (DEFAULT_GUI_FONT);
+		GetObject (hFont, sizeof(LOGFONT), &lf);
+		SecureZeroMemory (&cf, sizeof(CHOOSEFONT));
+		cf.lStructSize = sizeof (cf);
+		cf.hwndOwner = hwndParent;
+		cf.lpLogFont = &lf;
+		cf.Flags = CF_SCREENFONTS|CF_SCRIPTSONLY|CF_INITTOLOGFONTSTRUCT;
+		popstring (retButton);
+		popstring (retBuffer);
+		
+		if (ChooseFont(&cf)) {
+			TCHAR *szBuffer;
+			int nFontSize;
+			HDC hDC;
+			szBuffer = HeapAlloc (GetProcessHeap(), 0, string_size);
+			hDC = GetDC(hwndParent);
+			setuservariable (myatoi(retButton), _T("1"));
+			nFontSize = -MulDiv(lf.lfHeight, 72, GetDeviceCaps (hDC, LOGPIXELSY));
+			wnsprintf (szBuffer, string_size, _T("%s,%i,%i,%i"), lf.lfFaceName, lf.lfWeight, (lf.lfItalic) ? 1 : 0, nFontSize);
+			setuservariable (myatoi(retBuffer), szBuffer);
+			ReleaseDC (hwndParent, hDC);
+			HeapFree (GetProcessHeap(), 0, szBuffer);
+		} else {
+			setuservariable (myatoi(retButton), _T("0"));
+		}
+	}
+}
+
+PluginEntry(ColorDlg)
+{
+	TCHAR sztype[3]; // type of the return value
+	TCHAR retButton[3]; // return var of the button
+	TCHAR retBuffer[3]; // return var of the buffer
+	EXDLL_INIT();
+	{
+		CHOOSECOLOR cc;
+		int nType;
+		int i;
+		COLORREF col_array[16];
+		
+		popstring (sztype);
+		popstring (retButton);
+		popstring (retBuffer);
+		nType = myatoi (sztype);
+			
+		for (i = 0; i < 16; i++) col_array[i] = RGB(255,255,255);
+
+		SecureZeroMemory (&cc, sizeof(CHOOSECOLOR));
+		cc.lpCustColors = col_array;
+		cc.lStructSize = sizeof(CHOOSECOLOR);
+		cc.hwndOwner = hwndParent;
+		cc.Flags = CC_FULLOPEN|CC_SOLIDCOLOR;
+				
+		if (ChooseColor(&cc)) {
+			TCHAR szBuffer[32]; // just to be sure :v
+			switch (nType) {
+				case 0: // decimal format
+				{
+					wnsprintf (szBuffer, sizeof(szBuffer), _T("%i"), cc.rgbResult);
+					break;
+				}
+				case 1: // #rrggbb format
+				{
+					wnsprintf (szBuffer, sizeof(szBuffer), _T("#%02X%02X%02X"), GetRValue(cc.rgbResult), GetGValue(cc.rgbResult), GetBValue(cc.rgbResult));
+					break;
+				}
+				case 2: // rr,gg,bb format
+				{
+					wnsprintf (szBuffer, sizeof(szBuffer), _T("%i,%i,%i"), GetRValue(cc.rgbResult), GetGValue(cc.rgbResult), GetBValue(cc.rgbResult));
+					break;
+				}
+				case 3: // 0x00rrggbb format
+				{
+					wnsprintf (szBuffer, sizeof(szBuffer), _T("0x00%02X%02X%02X"), GetBValue(cc.rgbResult), GetGValue(cc.rgbResult), GetRValue(cc.rgbResult));
+					break;
+				}
+			}
+			setuservariable (myatoi(retButton), _T("1"));
+			setuservariable (myatoi(retBuffer), szBuffer);
+		} else {
+			setuservariable (myatoi(retButton), _T("0"));
+		}
+	}
+}
+
 PluginEntry(Open)
 {
 	int buff_size;
