@@ -1,22 +1,29 @@
 Dialogs plugin for nsis
 * This is updated from my old one (see here: http://forums.winamp.com/showthread.php?t=171833)
-* Updated for unicode version
+* Updated for unicode version and new nsis 3.x series api
 * Note that some functions where removed.
 * Also note that in some functions the parameters changed too.
+* DialogsEx has been superseded by this plugin, note that dialogsEx has InputRegBox. Dialogs v3 not. Need user/pass? See this: http://forums.winamp.com/showthread.php?t=223548
 * See examples
+* Need support? Go here: http://forums.winamp.com/showthread.php?t=382177
 
 To build the plugin, you need:
 * cmake >= 3.0
-* nsis (NSIS must be registered in your environment variables pointing to $NSISDIR)
+* nsis (NSIS must be registered in your environment variables pointing to your ${NSISDIR})
 * msvc 2005+
 * platform sdk
 * Could work with gcc >= 4.7 (still testing)
 
 to build:
 * Create a "build" directory in source dir.
+* chang directory to "build"
 * run: cmake [-G "MinGW Makefiles"] [-DUSE_UNICODE=OFF] ..
 
-History:
+History: 
++ v3.1.0.0: 08/12/2015
+- Added ColorDlg
+- Added FontDlg
+
 + v3.0.2.1: 08/11/2015
 - Some fixes
 
