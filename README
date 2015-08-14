@@ -19,7 +19,11 @@ to build:
 * chang directory to "build"
 * run: cmake [-G "MinGW Makefiles"] [-DUSE_UNICODE=OFF] ..
 
-History: 
+History:
++ v3.2.0.0: 08/14/2015
+- Added DrivesDlg
+- Now, we use strsafe header. Tested with mingw 4.9.2, seems to work.
+
 + v3.1.0.0: 08/12/2015
 - Added ColorDlg
 - Added FontDlg
