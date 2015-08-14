@@ -2,6 +2,34 @@
 
 HINSTANCE hInstance; // global, meh
 
+PluginEntry(DrivesDlg)
+{
+	TCHAR retButton[3];
+	TCHAR retVar[3];
+	EXDLL_INIT();
+	{
+		DriveDLGData pDDData;
+		HWND hDlg;
+		MSG msg;
+		popstring (pDDData.sTitle); // dialog title
+		popstring (pDDData.sText); // combobox string
+		popstring (pDDData.sOk); // label for ok button
+		popstring (pDDData.sCancel); // label for cancel button
+		popstring (retButton); // return var of the button
+		popstring (retVar); // return var of the text
+		pDDData.nRetButton = myatoi (retButton);
+		pDDData.nRetVal = myatoi (retVar);
+		hDlg = CreateDialogParam (hInstance, MAKEINTRESOURCE(IDD_DIALOG2), hwndParent, DialogDrivesFunc, (LPARAM)&pDDData);
+		while(GetMessage(&msg, NULL, 0, 0)) {
+			if(!IsDialogMessage(hDlg, &msg)) {
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
+		if (IsWindow(hDlg)) DestroyWindow(hDlg);
+	}
+}
+
 PluginEntry(InputBox)
 {
 	TCHAR sztype[3];
@@ -37,10 +65,12 @@ PluginEntry(InputBox)
 PluginEntry(About)
 {
 	TCHAR *buff; // buffer
-	buff = HeapAlloc (GetProcessHeap(), 0, sizeof(TCHAR)*string_size);
+	int buff_size;
+	buff_size = sizeof(TCHAR)*string_size;
+	buff = HeapAlloc (GetProcessHeap(), 0, buff_size);
 	EXDLL_INIT();
 	{
-		wnsprintf (buff, string_size, _T("Plugin name: %s\nCharset: %s\nVersion: %s\nAuthor: %s"), _T(PACKAGE_NAME), _T(PACKAGE_CHARSET), _T(PACKAGE_VERSION), _T(SELFIE));
+		StringCbPrintf (buff, buff_size, _T("Plugin name: %s\nCharset: %s\nVersion: %s\nAuthor: %s"), _T(PACKAGE_NAME), _T(PACKAGE_CHARSET), _T(PACKAGE_VERSION), _T(SELFIE));
 		MessageBox (hwndParent, buff, _T("About Dialogs"), MB_OK|MB_ICONINFORMATION);
 	}
 	HeapFree (GetProcessHeap(), 0, buff);
@@ -69,12 +99,14 @@ PluginEntry(FontDlg)
 		if (ChooseFont(&cf)) {
 			TCHAR *szBuffer;
 			int nFontSize;
+			int buff_size;
 			HDC hDC;
+			buff_size = sizeof(TCHAR)*string_size;
 			szBuffer = HeapAlloc (GetProcessHeap(), 0, string_size);
 			hDC = GetDC(hwndParent);
 			setuservariable (myatoi(retButton), _T("1"));
 			nFontSize = -MulDiv(lf.lfHeight, 72, GetDeviceCaps (hDC, LOGPIXELSY));
-			wnsprintf (szBuffer, string_size, _T("%s,%i,%i,%i"), lf.lfFaceName, lf.lfWeight, (lf.lfItalic) ? 1 : 0, nFontSize);
+			StringCbPrintf (szBuffer, string_size, _T("%s,%i,%i,%i"), lf.lfFaceName, lf.lfWeight, (lf.lfItalic) ? 1 : 0, nFontSize);
 			setuservariable (myatoi(retBuffer), szBuffer);
 			ReleaseDC (hwndParent, hDC);
 			HeapFree (GetProcessHeap(), 0, szBuffer);
@@ -114,22 +146,22 @@ PluginEntry(ColorDlg)
 			switch (nType) {
 				case 0: // decimal format
 				{
-					wnsprintf (szBuffer, sizeof(szBuffer), _T("%i"), cc.rgbResult);
+					StringCbPrintf (szBuffer, sizeof(szBuffer), _T("%i"), cc.rgbResult);
 					break;
 				}
 				case 1: // #rrggbb format
 				{
-					wnsprintf (szBuffer, sizeof(szBuffer), _T("#%02X%02X%02X"), GetRValue(cc.rgbResult), GetGValue(cc.rgbResult), GetBValue(cc.rgbResult));
+					StringCbPrintf (szBuffer, sizeof(szBuffer), _T("#%02X%02X%02X"), GetRValue(cc.rgbResult), GetGValue(cc.rgbResult), GetBValue(cc.rgbResult));
 					break;
 				}
 				case 2: // rr,gg,bb format
 				{
-					wnsprintf (szBuffer, sizeof(szBuffer), _T("%i,%i,%i"), GetRValue(cc.rgbResult), GetGValue(cc.rgbResult), GetBValue(cc.rgbResult));
+					StringCbPrintf (szBuffer, sizeof(szBuffer), _T("%i,%i,%i"), GetRValue(cc.rgbResult), GetGValue(cc.rgbResult), GetBValue(cc.rgbResult));
 					break;
 				}
 				case 3: // 0x00rrggbb format
 				{
-					wnsprintf (szBuffer, sizeof(szBuffer), _T("0x00%02X%02X%02X"), GetBValue(cc.rgbResult), GetGValue(cc.rgbResult), GetRValue(cc.rgbResult));
+					StringCbPrintf (szBuffer, sizeof(szBuffer), _T("0x00%02X%02X%02X"), GetBValue(cc.rgbResult), GetGValue(cc.rgbResult), GetRValue(cc.rgbResult));
 					break;
 				}
 			}

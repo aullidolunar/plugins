@@ -11,6 +11,84 @@ int CALLBACK FolderProc(HWND hwnd, UINT msg, LPARAM lParam, LPARAM lpData) {
 	return 0;
 }
 
+INT_PTR CALLBACK DialogDrivesFunc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	static LPDRIVEDLGDATA pDDData;
+	switch (uMsg) {
+		case WM_INITDIALOG:
+		{
+			TCHAR szLogicalDrives[MAX_PATH] = {0};
+			DWORD dwSize = MAX_PATH;
+			DWORD dwResult;
+			pDDData = (LPDRIVEDLGDATA)lParam;
+			
+			SetWindowText (hDlg, pDDData->sTitle);
+			SetDlgItemText (hDlg, IDOK, pDDData->sOk);
+			SetDlgItemText (hDlg, IDCANCEL, pDDData->sCancel);
+			dwResult = GetLogicalDriveStrings (dwSize, szLogicalDrives);
+			SendDlgItemMessage (hDlg, IDC_COMBOBOX, CB_ADDSTRING, 0, (LPARAM)pDDData->sText);
+			if (dwResult > 0 && dwResult <= MAX_PATH) {
+				TCHAR* szSingleDrive = szLogicalDrives;
+				while (*szSingleDrive) {
+					//printf("Drive: %s\n", szSingleDrive);
+					SendDlgItemMessage (hDlg, IDC_COMBOBOX, CB_ADDSTRING, 0, (LPARAM)szSingleDrive);
+					szSingleDrive += lstrlen (szSingleDrive) + 1;
+				}
+			}
+			SendDlgItemMessage (hDlg, IDC_COMBOBOX, CB_SETCURSEL, 0, 0);
+			return TRUE;
+		}
+		case WM_COMMAND:
+		{
+			switch (LOWORD(wParam))
+			{
+				case IDC_COMBOBOX:
+				{
+					switch (HIWORD(wParam)) 
+					{
+						case CBN_SELCHANGE:
+						{
+							int npos;
+							npos = SendMessage ((HWND)lParam, CB_GETCURSEL, 0, 0);
+							EnableWindow (GetDlgItem (hDlg, IDOK), (BOOL)npos);
+							break;
+						}
+					}
+					break;
+				}
+				case IDOK:
+				{
+					TCHAR buff[8];
+					int npos;
+					npos = SendDlgItemMessage (hDlg, IDC_COMBOBOX, CB_GETCURSEL, 0, 0);
+					SendDlgItemMessage (hDlg, IDC_COMBOBOX, CB_GETLBTEXT, npos, (LPARAM)&buff);
+					setuservariable (pDDData->nRetButton, _T("1"));
+					setuservariable (pDDData->nRetVal, buff);
+					DestroyWindow (hDlg);
+					break;
+				}
+				case IDCANCEL:
+				{
+					setuservariable (pDDData->nRetButton, _T("0"));
+					DestroyWindow (hDlg);
+					break;
+				}
+			}
+			return TRUE;
+		}
+		case WM_CLOSE:
+		{
+			DestroyWindow(hDlg);
+			return TRUE;
+		}
+		case WM_DESTROY:
+		{
+			PostQuitMessage(0);
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
 INT_PTR CALLBACK DialogFunc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	static LPIPBDATA pPBData;
 	switch(uMsg) {

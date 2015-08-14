@@ -4,6 +4,7 @@
 #include "Dialogs.h"
 
 int CALLBACK FolderProc(HWND, UINT, LPARAM, LPARAM);
+INT_PTR CALLBACK DialogDrivesFunc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK DialogFunc(HWND, UINT, WPARAM, LPARAM);
 TCHAR* replacechar(TCHAR*, TCHAR, TCHAR);
 
